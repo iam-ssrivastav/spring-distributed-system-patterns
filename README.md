@@ -36,6 +36,8 @@ Ensures the system remains responsive even when dependencies fail.
 
 ## 🏗️ Architecture Diagram
 
+![System Architecture](assets/architecture_diagram.png)
+
 ```mermaid
 graph TD
     User((User))
