@@ -1,0 +1,238 @@
+{
+    "info": {
+        "_postman_id": "distributed-patterns-demo-collection",
+        "name": "Distributed Patterns Demo API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Saga Orchestration",
+            "item": [
+                {
+                    "name": "Create Order (Success)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"customerId\": \"user123\",\n    \"productId\": \"prod-001\",\n    \"quantity\": 2,\n    \"price\": 500\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:8082/api/saga/orders",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8082",
+                            "path": [
+                                "api",
+                                "saga",
+                                "orders"
+                            ]
+                        },
+                        "description": "Initiates a successful purchase saga. Expects 200 OK and status 'COMPLETED'."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Order (Out of Stock Failure)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"customerId\": \"user123\",\n    \"productId\": \"OUT_OF_STOCK\",\n    \"quantity\": 1,\n    \"price\": 100\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:8082/api/saga/orders",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8082",
+                            "path": [
+                                "api",
+                                "saga",
+                                "orders"
+                            ]
+                        },
+                        "description": "Trigger a failure in the Inventory step. Expects 200 OK but status 'CANCELLED' with failure reason."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Order (Payment Rejected Failure)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"customerId\": \"user123\",\n    \"productId\": \"prod-001\",\n    \"quantity\": 1,\n    \"price\": 1500\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:8082/api/saga/orders",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8082",
+                            "path": [
+                                "api",
+                                "saga",
+                                "orders"
+                            ]
+                        },
+                        "description": "Trigger a failure in the Payment step (amount > 1000). Expects Compensation (Refund, Release Inventory) and status 'CANCELLED'."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Orders",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:8082/api/saga/orders",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8082",
+                            "path": [
+                                "api",
+                                "saga",
+                                "orders"
+                            ]
+                        },
+                        "description": "Retrieve all orders stored in the database."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Outbox Events",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:8082/api/saga/outbox",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8082",
+                            "path": [
+                                "api",
+                                "saga",
+                                "outbox"
+                            ]
+                        },
+                        "description": "Retrieve all events stored in the Outbox table."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "CQRS Pattern",
+            "item": [
+                {
+                    "name": "Create Product (Command)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"MacBook Pro\",\n    \"description\": \"M3 Max Chip\",\n    \"price\": 3000,\n    \"stock\": 5\n}"
+                        },
+                        "url": {
+                            "raw": "http://localhost:8082/api/cqrs/commands/products",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8082",
+                            "path": [
+                                "api",
+                                "cqrs",
+                                "commands",
+                                "products"
+                            ]
+                        },
+                        "description": "Create a new product using the Command Service (Write Model)."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Products (Query)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:8082/api/cqrs/queries/products",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8082",
+                            "path": [
+                                "api",
+                                "cqrs",
+                                "queries",
+                                "products"
+                            ]
+                        },
+                        "description": "Retrieve all products using the Query Service (Read Model)."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Resilience Patterns",
+            "item": [
+                {
+                    "name": "Invoke Risky Payment Service",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:8082/api/resilience/payment",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8082",
+                            "path": [
+                                "api",
+                                "resilience",
+                                "payment"
+                            ]
+                        },
+                        "description": "Calls a service with a 60% failure rate. Use this repetitively to test Circuit Breaker and Retry mechanisms."
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
+}
